@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   LifeBuoy,
   Package,
+  Printer,
   Receipt,
   ScrollText,
   Settings,
@@ -68,6 +69,7 @@ export const NAV_SECTIONS: NavSection[] = [
     title: 'Platform',
     items: [
       { label: 'Configuration', to: '/config', icon: Settings, permissions: ['config.view'] },
+      { label: 'Document templates', to: '/documents', icon: Printer, permissions: ['config.view'] },
       { label: 'System health', to: '/ops', icon: Activity, permissions: ['ops.view'] },
     ],
   },

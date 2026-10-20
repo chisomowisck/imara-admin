@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Bell, ChevronDown, Download, ShieldAlert } from 'lucide-react';
 import { tenantsApi, type TenantAction, type TenantDetail } from '@/api/tenants';
+import { documentTemplatesApi, LAYOUT_LABELS } from '@/api/documents';
 import { useAuth } from '@/auth/AuthContext';
 import { DataTable } from '@/components/table/DataTable';
 import { Alert, Badge, Button, Card, DescriptionList, PageHeader, StatusBadge, Tabs, Textarea } from '@/components/ui/primitives';
@@ -12,7 +13,33 @@ import { formatDate, formatDateTime, humanize, timeAgo } from '@/lib/format';
 import { ACTION_LABELS, ACTION_PERMISSIONS, useTenantActions } from './TenantActionDialogs';
 import { tenantTabExtensions } from './tenantTabExtensions';
 
-type TabId = 'overview' | 'users' | 'modules' | 'billing' | 'activity' | 'notes';
+type TabId = 'overview' | 'users' | 'modules' | 'billing' | 'print' | 'activity' | 'notes';
+
+function PrintTemplatesTab({ id }: { id: number }) {
+  const templates = useQuery({ queryKey: ['tenant', id, 'print-templates'], queryFn: () => documentTemplatesApi.tenantTemplates(id) });
+  return (
+    <>
+      <p className="mb-2 text-xs text-zinc-500">Read-only. The organisation's own print templates; SmartTech never edits them.</p>
+      <DataTable
+        rows={templates.data}
+        loading={templates.isLoading}
+        error={templates.error}
+        onRetry={templates.refetch}
+        rowKey={(r) => r.id}
+        columns={[
+          { id: 'name', header: 'Name', cell: (r) => r.name, value: (r) => r.name, sortable: true },
+          { id: 'type', header: 'Document type', cell: (r) => humanize(r.documentType.toLowerCase()), value: (r) => r.documentType, sortable: true },
+          { id: 'layout', header: 'Layout', cell: (r) => LAYOUT_LABELS[r.layout] ?? r.layout, value: (r) => r.layout },
+          { id: 'default', header: 'Default', cell: (r) => (r.isDefault ? <Badge tone="accent">Default</Badge> : null), value: (r) => r.isDefault },
+          { id: 'status', header: 'Status', cell: (r) => <StatusBadge status={r.status} />, value: (r) => r.status },
+          { id: 'version', header: 'Version', cell: (r) => `v${r.version}`, value: (r) => r.version, hideOnMobile: true },
+          { id: 'updated', header: 'Updated', cell: (r) => formatDate(r.updatedAt), value: (r) => r.updatedAt, sortable: true, hideOnMobile: true },
+        ]}
+        emptyTitle="This organisation uses the platform default templates"
+      />
+    </>
+  );
+}
 
 function OverviewTab({ t }: { t: TenantDetail }) {
   const last = t.statusHistory[0];
@@ -192,6 +219,7 @@ export function TenantDetailPage() {
           users: <UsersTab id={id} />,
           modules: ext.modules ? <ext.modules tenant={t} /> : <Alert tone="info">Module controls become available once plans are configured.</Alert>,
           billing: ext.billing ? <ext.billing tenant={t} /> : <Alert tone="info">Billing details become available once subscriptions are configured.</Alert>,
+          print: <PrintTemplatesTab id={id} />,
           activity: <ActivityTab id={id} />,
           notes: <NotesTab id={id} />,
         };
@@ -232,6 +260,7 @@ export function TenantDetailPage() {
                 { id: 'users', label: `Users (${t._count.members})` },
                 { id: 'modules', label: 'Modules' },
                 { id: 'billing', label: 'Billing' },
+                { id: 'print', label: 'Print templates' },
                 { id: 'activity', label: 'Activity log' },
                 { id: 'notes', label: 'Notes', hidden: !can('tenants.notes') },
               ]}

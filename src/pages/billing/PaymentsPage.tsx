@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invoicesApi, type PaymentRow } from '@/api/platform';
+import { platformPrintApi } from '@/api/documents';
+import { PrintPreviewModal } from '@/components/documents/PrintPreviewModal';
 import { useAuth } from '@/auth/AuthContext';
 import { DataTable } from '@/components/table/DataTable';
 import { Alert, Badge, Button, Field, Input, PageHeader, Select, StatusBadge, Tabs, Textarea } from '@/components/ui/primitives';
@@ -47,6 +49,7 @@ export function PaymentsPage() {
   const [page, setPage] = useState(1);
   const [attemptStatus, setAttemptStatus] = useState('');
   const [refunding, setRefunding] = useState<PaymentRow | null>(null);
+  const [receiptOf, setReceiptOf] = useState<PaymentRow | null>(null);
   const payments = useQuery({ queryKey: ['payments', page], queryFn: () => invoicesApi.payments({ page, limit: 25 }), enabled: tab === 'payments' });
   const attempts = useQuery({ queryKey: ['attempts', page, attemptStatus], queryFn: () => invoicesApi.attempts({ page, limit: 25, status: attemptStatus }), enabled: tab === 'attempts' });
   const credit = useQuery({ queryKey: ['credit-notes'], queryFn: () => invoicesApi.creditNotes(), enabled: tab === 'credit' });
@@ -75,7 +78,7 @@ export function PaymentsPage() {
             { id: 'method', header: 'Method', cell: (r) => <span>{humanize(r.method)} <span className="text-xs text-zinc-500">{r.gateway}</span></span>, value: (r) => r.method },
             { id: 'ref', header: 'Reference', cell: (r) => <span className="font-mono text-xs">{r.reference ?? '—'}</span>, value: (r) => r.reference, hideOnMobile: true },
             { id: 'amount', header: 'Amount', cell: (r) => <span className={r.kind === 'REFUND' ? 'text-red-600' : ''}>{formatMoney(r.amount)}{r.kind === 'REFUND' && <Badge tone="warning" className="ml-1">Refund</Badge>}</span>, value: (r) => r.amount, sortable: true, className: 'text-right' },
-            { id: 'act', header: '', exportable: false, cell: (r) => (can('billing.refund') && r.kind === 'PAYMENT' ? <Button size="sm" variant="ghost" onClick={() => setRefunding(r)}>Refund</Button> : null) },
+            { id: 'act', header: '', exportable: false, cell: (r) => (r.kind === 'PAYMENT' ? <span className="flex justify-end gap-1"><Button size="sm" variant="ghost" onClick={() => setReceiptOf(r)}>Receipt</Button>{can('billing.refund') && <Button size="sm" variant="ghost" onClick={() => setRefunding(r)}>Refund</Button>}</span> : null) },
           ]}
           emptyTitle="No payments yet"
         />
@@ -124,6 +127,7 @@ export function PaymentsPage() {
           ]} emptyTitle="No refunds" />
       )}
       {refunding && <RefundModal payment={refunding} onClose={() => setRefunding(null)} />}
+      {receiptOf && <PrintPreviewModal open onClose={() => setReceiptOf(null)} title="Payment receipt" queryKey={['payment-receipt', receiptOf.id]} load={() => platformPrintApi.receipt(receiptOf.id)} />}
     </div>
   );
 }

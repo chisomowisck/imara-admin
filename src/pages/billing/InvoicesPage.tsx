@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Download } from 'lucide-react';
+import { Download, Printer } from 'lucide-react';
 import { invoicesApi, type InvoiceRow } from '@/api/platform';
+import { platformPrintApi } from '@/api/documents';
+import { PrintPreviewModal } from '@/components/documents/PrintPreviewModal';
 import { useAuth } from '@/auth/AuthContext';
 import { DataTable } from '@/components/table/DataTable';
 import { Alert, Badge, Button, DescriptionList, Field, Input, PageHeader, Select, StatusBadge, Textarea } from '@/components/ui/primitives';
@@ -20,6 +22,7 @@ export function InvoiceDetail({ id, onClose }: { id: number; onClose: () => void
   const { can } = useAuth();
   const inv = useQuery({ queryKey: ['invoice', id], queryFn: () => invoicesApi.get(id) });
   const [action, setAction] = useState<Action>(null);
+  const [printing, setPrinting] = useState(false);
   const [form, setForm] = useState({ amount: '', method: 'BANK_TRANSFER', reference: '', paidAt: new Date().toISOString().slice(0, 10), notes: '', reason: '', dueDate: '' });
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ['invoice', id] });
@@ -51,6 +54,8 @@ export function InvoiceDetail({ id, onClose }: { id: number; onClose: () => void
               {i.dunning && !i.dunning.resolvedAt && <Badge tone="warning">Dunning stage {i.dunning.stage}</Badge>}
               <div className="ml-auto flex flex-wrap gap-2">
                 <Button size="sm" variant="secondary" icon={<Download className="size-3.5" />} onClick={() => invoicesApi.pdf(i.id).catch(toast.error)}>PDF</Button>
+                <Button size="sm" variant="secondary" icon={<Printer className="size-3.5" />} onClick={() => setPrinting(true)}>Print</Button>
+                <PrintPreviewModal open={printing} onClose={() => setPrinting(false)} title={`Invoice ${i.number}`} queryKey={['invoice', i.id]} load={() => platformPrintApi.invoice(i.id)} />
                 {can('billing.manage') && i.status !== 'CANCELLED' && <Button size="sm" variant="secondary" onClick={() => run.mutate(() => invoicesApi.resend(i.id))}>Email again</Button>}
                 {can('billing.manage') && payable && <Button size="sm" onClick={() => open('manual', i.balance)}>Record payment</Button>}
                 {can('billing.manage') && payable && <Button size="sm" variant="secondary" onClick={() => run.mutate(async () => { const r = await invoicesApi.retry(i.id); if (!r.started) throw new Error(r.reason ?? 'Could not start a retry'); })}>Retry charge</Button>}

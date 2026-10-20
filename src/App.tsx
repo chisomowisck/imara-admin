@@ -27,6 +27,8 @@ import { ComposeNotificationPage, NotificationsPage } from '@/pages/notification
 import { SupportPage } from '@/pages/support/SupportPage';
 import { ConfigurationPage } from '@/pages/config/ConfigurationPage';
 import { SystemHealthPage } from '@/pages/ops/SystemHealthPage';
+import { DocumentTemplatesPage } from '@/pages/documents/DocumentTemplatesPage';
+import { DocumentTemplateEditorPage } from '@/pages/documents/DocumentTemplateEditorPage';
 import { ApiError } from '@/api/client';
 
 const queryClient = new QueryClient({
@@ -63,6 +65,9 @@ const router = createBrowserRouter([
           { path: 'notifications/new', element: <RequirePermission all={['notifications.send']}><ComposeNotificationPage /></RequirePermission> },
           { path: 'support', element: <RequirePermission all={['support.view']}><SupportPage /></RequirePermission> },
           { path: 'config', element: <RequirePermission all={['config.view']}><ConfigurationPage /></RequirePermission> },
+          { path: 'documents', element: <RequirePermission all={['config.view']}><DocumentTemplatesPage /></RequirePermission> },
+          { path: 'documents/new', element: <RequirePermission all={['config.view']}><DocumentTemplateEditorPage /></RequirePermission> },
+          { path: 'documents/:id', element: <RequirePermission all={['config.view']}><DocumentTemplateEditorPage /></RequirePermission> },
           { path: 'ops', element: <RequirePermission all={['ops.view']}><SystemHealthPage /></RequirePermission> },
           { path: 'admins', element: <RequirePermission all={['admins.view']}><AdminsPage /></RequirePermission> },
           { path: 'roles', element: <RequirePermission all={['admins.view']}><RolesPage /></RequirePermission> },
