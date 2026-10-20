@@ -14,6 +14,10 @@ import { AuditPage } from '@/pages/audit/AuditPage';
 import { DashboardPage } from '@/pages/dashboard/DashboardPage';
 import { TenantsPage } from '@/pages/tenants/TenantsPage';
 import { TenantDetailPage } from '@/pages/tenants/TenantDetailPage';
+import { PlansPage } from '@/pages/billing/PlansPage';
+import { SubscriptionsPage } from '@/pages/billing/SubscriptionsPage';
+import { UsagePage } from '@/pages/billing/UsagePage';
+import '@/pages/billing/TenantBillingTabs';
 import { ApiError } from '@/api/client';
 
 const queryClient = new QueryClient({
@@ -39,6 +43,9 @@ const router = createBrowserRouter([
           { index: true, element: <DashboardPage /> },
           { path: 'tenants', element: <RequirePermission all={['tenants.view']}><TenantsPage /></RequirePermission> },
           { path: 'tenants/:id', element: <RequirePermission all={['tenants.view']}><TenantDetailPage /></RequirePermission> },
+          { path: 'billing/plans', element: <RequirePermission all={['plans.view']}><PlansPage /></RequirePermission> },
+          { path: 'billing/subscriptions', element: <RequirePermission all={['subscriptions.view']}><SubscriptionsPage /></RequirePermission> },
+          { path: 'billing/usage', element: <RequirePermission all={['usage.view']}><UsagePage /></RequirePermission> },
           { path: 'admins', element: <RequirePermission all={['admins.view']}><AdminsPage /></RequirePermission> },
           { path: 'roles', element: <RequirePermission all={['admins.view']}><RolesPage /></RequirePermission> },
           { path: 'audit', element: <RequirePermission all={['audit.view']}><AuditPage /></RequirePermission> },

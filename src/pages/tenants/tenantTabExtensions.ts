@@ -8,5 +8,6 @@ import type { TenantDetail } from '@/api/tenants';
 export const tenantTabExtensions: {
   modules?: ComponentType<{ tenant: TenantDetail }>;
   billing?: ComponentType<{ tenant: TenantDetail }>;
+  billingExtra?: ComponentType<{ tenant: TenantDetail }>;
   headerActions?: ComponentType<{ tenant: TenantDetail; onChanged: () => void }>;
 } = {};
