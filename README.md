@@ -79,7 +79,8 @@ Payment gateway, SMTP/Resend and other integration credentials are **not** envir
 
 1. Enter email and password, then the 6-digit code. Email OTP is always on. Admins can also add an authenticator app and download recovery codes under **My account**.
 2. **Sign in with Google** works only for an existing admin whose email matches. It never creates admins, and the one-time code is still required.
-3. Admin tokens are rejected by tenant routes and tenant tokens are rejected by `/api/v1/admin/*`.
+3. Lost the password or locked out? Run `npm run admin:reset-password` in `imara-backend`. It uses `SEED_SUPER_ADMIN_PASSWORD` from `.env` when set, otherwise prints a new temporary password.
+4. Admin tokens are rejected by tenant routes and tenant tokens are rejected by `/api/v1/admin/*`.
 
 ## 4. Running scheduled jobs manually
 
