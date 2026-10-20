@@ -18,6 +18,15 @@ import { PlansPage } from '@/pages/billing/PlansPage';
 import { SubscriptionsPage } from '@/pages/billing/SubscriptionsPage';
 import { UsagePage } from '@/pages/billing/UsagePage';
 import '@/pages/billing/TenantBillingTabs';
+import '@/pages/billing/TenantBillingExtra';
+import { InvoicesPage } from '@/pages/billing/InvoicesPage';
+import { PaymentsPage } from '@/pages/billing/PaymentsPage';
+import { CouponsPage } from '@/pages/billing/CouponsPage';
+import { ReportsPage } from '@/pages/reports/ReportsPage';
+import { ComposeNotificationPage, NotificationsPage } from '@/pages/notifications/NotificationsPage';
+import { SupportPage } from '@/pages/support/SupportPage';
+import { ConfigurationPage } from '@/pages/config/ConfigurationPage';
+import { SystemHealthPage } from '@/pages/ops/SystemHealthPage';
 import { ApiError } from '@/api/client';
 
 const queryClient = new QueryClient({
@@ -46,6 +55,15 @@ const router = createBrowserRouter([
           { path: 'billing/plans', element: <RequirePermission all={['plans.view']}><PlansPage /></RequirePermission> },
           { path: 'billing/subscriptions', element: <RequirePermission all={['subscriptions.view']}><SubscriptionsPage /></RequirePermission> },
           { path: 'billing/usage', element: <RequirePermission all={['usage.view']}><UsagePage /></RequirePermission> },
+          { path: 'billing/invoices', element: <RequirePermission all={['billing.view']}><InvoicesPage /></RequirePermission> },
+          { path: 'billing/payments', element: <RequirePermission all={['billing.view']}><PaymentsPage /></RequirePermission> },
+          { path: 'billing/coupons', element: <RequirePermission all={['coupons.manage']}><CouponsPage /></RequirePermission> },
+          { path: 'reports', element: <RequirePermission all={['reports.view']}><ReportsPage /></RequirePermission> },
+          { path: 'notifications', element: <RequirePermission all={['notifications.view']}><NotificationsPage /></RequirePermission> },
+          { path: 'notifications/new', element: <RequirePermission all={['notifications.send']}><ComposeNotificationPage /></RequirePermission> },
+          { path: 'support', element: <RequirePermission all={['support.view']}><SupportPage /></RequirePermission> },
+          { path: 'config', element: <RequirePermission all={['config.view']}><ConfigurationPage /></RequirePermission> },
+          { path: 'ops', element: <RequirePermission all={['ops.view']}><SystemHealthPage /></RequirePermission> },
           { path: 'admins', element: <RequirePermission all={['admins.view']}><AdminsPage /></RequirePermission> },
           { path: 'roles', element: <RequirePermission all={['admins.view']}><RolesPage /></RequirePermission> },
           { path: 'audit', element: <RequirePermission all={['audit.view']}><AuditPage /></RequirePermission> },

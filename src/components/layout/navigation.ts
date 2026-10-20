@@ -82,5 +82,5 @@ export const NAV_SECTIONS: NavSection[] = [
   },
 ];
 
-/** Routes that exist in the app so far (others are hidden from the sidebar until built). */
-export const AVAILABLE_ROUTES = new Set<string>(['/', '/tenants', '/billing/plans', '/billing/subscriptions', '/billing/usage', '/admins', '/roles', '/audit', '/account']);
+/** Every sidebar route is now built. */
+export const AVAILABLE_ROUTES = new Set<string>(NAV_SECTIONS.flatMap((s) => s.items.map((i) => i.to)));
