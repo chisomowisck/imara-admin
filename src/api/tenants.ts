@@ -1,7 +1,7 @@
 import { download, get, post, type Paginated } from './client';
 import type { AuditRow } from './admins';
 
-export type TenantStatus = 'TRIAL' | 'ACTIVE' | 'GRACE_PERIOD' | 'SUSPENDED' | 'ARCHIVED' | 'DELETED';
+export type TenantStatus = 'TRIAL' | 'ACTIVE' | 'GRACE_PERIOD' | 'PENDING_PAYMENT' | 'SUSPENDED' | 'ARCHIVED' | 'DELETED';
 export type TenantAction = 'SUSPEND' | 'REACTIVATE' | 'OFFBOARD' | 'RESTORE' | 'PURGE';
 
 export interface TenantRow {

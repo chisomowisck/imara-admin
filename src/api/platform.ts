@@ -7,6 +7,8 @@ export interface Overview {
   activeClients: number;
   newClientsThisMonth: number;
   suspendedClients: number;
+  /** Self-registered tenants waiting for their first payment */
+  pendingPaymentClients?: number;
   archivedClients: number;
   monthlyRevenue: number;
   overdueInvoices: { count: number; value: number };

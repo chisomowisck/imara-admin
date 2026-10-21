@@ -48,7 +48,7 @@ export function DashboardPage() {
               <Widget to={`/tenants?provisionedFrom=${new Date().toISOString().slice(0, 8)}01`} label="New clients this month" value={o.newClientsThisMonth.toLocaleString()} sub="Provisioned since the 1st" icon={<Sparkles className="size-4" />} tone="info" />
               <Widget to="/reports" label="Monthly revenue" value={formatMoney(o.monthlyRevenue)} sub="Payments received this calendar month" icon={<Banknote className="size-4" />} />
               <Widget to="/billing/invoices?status=OVERDUE" label="Overdue invoices" value={o.overdueInvoices.count.toLocaleString()} sub={`${formatMoney(o.overdueInvoices.value)} outstanding`} icon={<AlertTriangle className="size-4" />} tone={o.overdueInvoices.count ? 'danger' : 'accent'} />
-              <Widget to="/tenants?status=SUSPENDED" label="Suspended clients" value={o.suspendedClients.toLocaleString()} sub="Access blocked" icon={<PauseCircle className="size-4" />} tone={o.suspendedClients ? 'warning' : 'accent'} />
+              <Widget to="/tenants?status=SUSPENDED" label="Suspended clients" value={o.suspendedClients.toLocaleString()} sub={o.pendingPaymentClients ? `Access blocked; ${o.pendingPaymentClients.toLocaleString()} more awaiting first payment` : "Access blocked"} icon={<PauseCircle className="size-4" />} tone={o.suspendedClients ? 'warning' : 'accent'} />
             </div>
             {can('billing.view') && (
               <div className="grid gap-4 lg:grid-cols-[1fr_380px]">

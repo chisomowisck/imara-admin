@@ -120,6 +120,7 @@ export function TenantsPage() {
               <option value="">All statuses</option>
               <option value="ACTIVE,TRIAL,GRACE_PERIOD">Active (incl. trial)</option>
               <option value="TRIAL">Trial</option>
+              <option value="PENDING_PAYMENT">Pending payment</option>
               <option value="SUSPENDED">Suspended</option>
               <option value="ARCHIVED">Archived</option>
               <option value="DELETED">Deleted</option>
